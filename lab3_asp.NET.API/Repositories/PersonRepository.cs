@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace lab3_asp.NET.API.Repositories
 {
-    public class PersonRepository : IRepository<Person, string>
+    public class PersonRepository : IRepository<Person, int>
     {
         private PersonDbContext _context;
         public PersonRepository(PersonDbContext context)
         {
             _context = context;
         }
-        public async Task Delete(string name)
+        public async Task Delete(int id)
         {
-            var personToDelete = await _context.Persons.FirstOrDefaultAsync(person => person.Name.ToLower().Contains(name.ToLower()));
+            var personToDelete = await _context.Persons.FirstOrDefaultAsync(person => person.PersonId == id);
             if(personToDelete != null)
             {
                 _context.Persons.Remove(personToDelete);
@@ -29,9 +29,9 @@ namespace lab3_asp.NET.API.Repositories
             return await _context.Persons.ToListAsync();
         }
 
-        public async Task<Person> GetSpecified(string name)
+        public async Task<Person> GetById(int id)
         {
-            return await _context.Persons.FirstOrDefaultAsync(person => person.Name.ToLower().Contains(name.ToLower()));
+            return await _context.Persons.FirstOrDefaultAsync(person => person.PersonId == id);
         }
 
         public async Task<Person> Insert(Person entity)

@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace lab3_asp.NET.API.Repositories
 {
-    public class LinkRepository : IRepository<Link, string>
+    public class LinkRepository : IRepository<Link, int>
     {
         private PersonDbContext _context;
         public LinkRepository(PersonDbContext context)
         {
             _context = context;
         }
-        public async Task Delete(string name)
+        public async Task Delete(int id)
         {
-            var link = await _context.Links.FirstOrDefaultAsync(link => link.Url.ToLower().Contains(name.ToLower()));
+            var link = await _context.Links.FirstOrDefaultAsync(link => link.LinkId == id);
             if(link != null)
             {
                 _context.Links.Remove(link);
@@ -29,9 +29,9 @@ namespace lab3_asp.NET.API.Repositories
             return await _context.Links.ToListAsync();
         }
 
-        public async Task<Link> GetSpecified(string name)
+        public async Task<Link> GetById(int id)
         {
-            return await _context.Links.FirstOrDefaultAsync(link => link.Url.ToLower().Contains(name.ToLower()));
+            return await _context.Links.FirstOrDefaultAsync(link => link.LinkId == id);
         }
 
         public async Task<Link> Insert(Link entity)

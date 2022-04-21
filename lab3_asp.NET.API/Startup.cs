@@ -31,10 +31,10 @@ namespace lab3_asp.NET.API
         {
             services.AddControllers();
             services.AddDbContext<PersonDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PersonDbContext")));
-            services.AddScoped<IRepository<Person, string>, PersonRepository>();
-            services.AddScoped<IRepository<Interest, string>, InterestRepository>();
-            services.AddScoped<IRepository<Link, string>, LinkRepository>();
-            services.AddScoped<IRepository<PersonInterest, string>, PersonInterestRepository>();
+            services.AddScoped<IRepository<Person, int>, PersonRepository>();
+            services.AddScoped<IRepository<Interest, int>, InterestRepository>();
+            services.AddScoped<IRepository<Link, int>, LinkRepository>();
+            services.AddScoped<IRepository<PersonInterest, int>, PersonInterestRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
