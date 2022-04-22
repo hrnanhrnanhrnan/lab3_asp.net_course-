@@ -9,7 +9,7 @@ using lab3_asp.NET.API.Contexts;
 namespace lab3_asp.NET.API.Migrations
 {
     [DbContext(typeof(PersonDbContext))]
-    [Migration("20220420142521_init mig")]
+    [Migration("20220421123613_init mig")]
     partial class initmig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

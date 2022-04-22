@@ -22,6 +22,8 @@ namespace lab3_asp.NET.API.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            //seed data
             modelBuilder.Entity<Person>().HasData(new List<Person>()
             {
                 new Person(){PersonId=1, Name="Peter", TelephoneNumber="070945094590"},

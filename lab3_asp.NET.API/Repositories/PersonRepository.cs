@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace lab3_asp.NET.API.Repositories
 {
+    // repository for Persons that implements the IRepository interface
     public class PersonRepository : IRepository<Person, int>
     {
         private PersonDbContext _context;

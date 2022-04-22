@@ -30,6 +30,7 @@ namespace lab3_asp.NET.API.Controllers
             _personInterestRepository = personInterestRepository;
         }
 
+        //endpoint to fetch all interests
         [HttpGet]
         public async Task<IActionResult> GetAllInterests()
         {
@@ -45,6 +46,7 @@ namespace lab3_asp.NET.API.Controllers
             }
         }
 
+        //endpoint to fetch all interests filtered on name
         [HttpGet("{name}")]
         public async Task<IActionResult> GetAllInterestFromSpecifiedPerson(string name)
         {
@@ -65,6 +67,7 @@ namespace lab3_asp.NET.API.Controllers
             }
         }
 
+        //endpoint to connect person to interest
         [HttpPost]
         public async Task<IActionResult> UpdatePersonInterest(PersonInterest personInterest)
         {

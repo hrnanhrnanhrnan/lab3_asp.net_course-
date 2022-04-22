@@ -31,6 +31,7 @@ namespace lab3_asp.NET.API.Controllers
             _personInterestRepository = personInterestRepository;
         }
 
+        //endpoint to get all persons
         [HttpGet]
         public async Task<IActionResult> GetAllPersons()
         {
@@ -46,6 +47,7 @@ namespace lab3_asp.NET.API.Controllers
 
         }
 
+        //endpoint to get person specified by name
         [HttpGet("{name}")]
         public async Task<IActionResult> GetPersonByName(string name)
         {
@@ -57,7 +59,7 @@ namespace lab3_asp.NET.API.Controllers
             }
             else
             {
-                return NotFound($"Could not find any links for a person with a name that consist of '{name}'...");
+                return NotFound($"Could not find any persons with a name that contains '{name}'...");
             }
         }
     }
