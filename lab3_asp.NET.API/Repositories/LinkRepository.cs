@@ -16,13 +16,15 @@ namespace lab3_asp.NET.API.Repositories
         {
             _context = context;
         }
-        public async Task Delete(int id)
+        public async Task<Link> Delete(int id)
         {
             var link = await _context.Links.FirstOrDefaultAsync(link => link.LinkId == id);
             if(link != null)
             {
                 _context.Links.Remove(link);
+                return link;
             }
+            return null;
         }
 
         public async Task<IEnumerable<Link>> GetAll()
@@ -37,8 +39,8 @@ namespace lab3_asp.NET.API.Repositories
 
         public async Task<Link> Insert(Link entity)
         {
-            await _context.Links.AddAsync(entity);
-            return entity;
+            var result = await _context.Links.AddAsync(entity);
+            return result.Entity;
         }
 
         public async Task Save()

@@ -18,7 +18,7 @@ namespace lab3_asp.NET.API.Repositories
         Task<T1> Insert(T1 entity);
 
         //async generic method to delete record from the database
-        Task Delete(T2 id);
+        Task<T1> Delete(T2 id);
 
         //async generic method to save changes to the context
         Task Save();

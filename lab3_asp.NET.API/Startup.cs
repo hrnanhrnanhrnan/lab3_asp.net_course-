@@ -35,6 +35,10 @@ namespace lab3_asp.NET.API
             services.AddScoped<IRepository<Interest, int>, InterestRepository>();
             services.AddScoped<IRepository<Link, int>, LinkRepository>();
             services.AddScoped<IRepository<PersonInterest, int>, PersonInterestRepository>();
+            //services.AddControllersWithViews()
+            //    .AddNewtonsoftJson(options =>
+            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

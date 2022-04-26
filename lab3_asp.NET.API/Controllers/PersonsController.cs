@@ -13,14 +13,14 @@ namespace lab3_asp.NET.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonController : ControllerBase
+    public class PersonsController : ControllerBase
     {
         private readonly IRepository<Person, int> _personRepository;
         private readonly IRepository<Interest, int> _interestRepository;
         private readonly IRepository<Link, int> _linkRepository;
         private readonly IRepository<PersonInterest, int> _personInterestRepository;
 
-        public PersonController(IRepository<Person, int> personRepository,
+        public PersonsController(IRepository<Person, int> personRepository,
             IRepository<Interest, int> interestRepository, 
             IRepository<Link, int> linkRepository, 
             IRepository<PersonInterest, int> personInterestRepository)
@@ -35,14 +35,21 @@ namespace lab3_asp.NET.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPersons()
         {
-            var persons = await _personRepository.GetAll();
-            if (persons.ToList().Count != 0)
+            try
             {
-                return Ok(persons); 
+                var persons = await _personRepository.GetAll();
+                if (persons.ToList().Count != 0)
+                {
+                    return Ok(persons);
+                }
+                else
+                {
+                    return NotFound($"Could not find any persons...");
+                }
             }
-            else
+            catch (Exception)
             {
-                return NotFound($"Could not find any persons...");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error when trying to retrieve data from the database");
             }
 
         }
@@ -51,15 +58,22 @@ namespace lab3_asp.NET.API.Controllers
         [HttpGet("{name}")]
         public async Task<IActionResult> GetPersonByName(string name)
         {
-            var persons = await _personRepository.GetAll();
-            var person = persons.PersonFromName(name);
-            if (person != null)
+            try
             {
-                return Ok(person);
+                var persons = await _personRepository.GetAll();
+                var person = persons.PersonFromName(name);
+                if (person != null)
+                {
+                    return Ok(person);
+                }
+                else
+                {
+                    return NotFound($"Could not find any persons with a name that contains '{name}'...");
+                }
             }
-            else
+            catch (Exception)
             {
-                return NotFound($"Could not find any persons with a name that contains '{name}'...");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error when trying to retrieve data from the database");
             }
         }
     }
