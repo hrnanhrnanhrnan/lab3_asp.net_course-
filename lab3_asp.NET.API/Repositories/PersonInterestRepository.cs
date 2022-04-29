@@ -30,12 +30,24 @@ namespace lab3_asp.NET.API.Repositories
 
         public async Task<IEnumerable<PersonInterest>> GetAll()
         {
-            return await _context.PersonInterests.ToListAsync();
+            return await _context.PersonInterests.Include(pi => pi.Interest)
+                .ThenInclude(i => i.Links)
+                .Include(pi => pi.Interest)
+                .ThenInclude(i => i.PersonInterests)
+                .ThenInclude(pi => pi.Person)
+                .Include(pi => pi.Person)
+                .ToListAsync();
         }
 
         public async Task<PersonInterest> GetById(int id)
         {
-            return await _context.PersonInterests.FirstOrDefaultAsync(pi => pi.PersonInterestId== id);
+            return await _context.PersonInterests.Include(pi => pi.Interest)
+                .ThenInclude(i => i.Links)
+                .Include(pi => pi.Interest)
+                .ThenInclude(i => i.PersonInterests)
+                .ThenInclude(pi => pi.Person)
+                .Include(pi => pi.Person)
+                .FirstOrDefaultAsync(pi => pi.PersonInterestId== id);
         }
 
         public async Task<PersonInterest> Insert(PersonInterest entity)

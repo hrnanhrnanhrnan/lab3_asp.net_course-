@@ -29,6 +29,7 @@ namespace lab3_asp.NET.API.Controllers
             _linkRepository = linkRepository;
             _personInterestRepository = personInterestRepository;
         }
+
         //endpoint to fetch all links
         [HttpGet]
         public async Task<IActionResult> GetAllLinks()
@@ -52,7 +53,7 @@ namespace lab3_asp.NET.API.Controllers
         }
 
         //endpoint to fetch link from links table by id
-        [HttpGet("getbyid:{id}")]
+        [HttpGet("linkbyid:{id}")]
         public async Task<IActionResult> GetLinkById(int id)
         {
             try
@@ -83,13 +84,11 @@ namespace lab3_asp.NET.API.Controllers
                 if (personFromName != null)
                 {
                     var person = await _personRepository.GetById(personFromName.PersonId);
-                    var personInterests = await _personInterestRepository.GetAll();
-                    var interests = await _interestRepository.GetAll();
                     var links = await _linkRepository.GetAll();
-                    var query = personInterests.Where(pi => pi.PersonId == person.PersonId)
-                        .Join(interests, o => o.InterestId, i => i.InterestId, (o, i) => new { o, i })
-                        .Join(links, o => o.i.InterestId, i => i.InterestId, (interest, link) => new { Url = link.Url });
-                    return Ok(query.Distinct());
+                    var query = links.Join(await _personInterestRepository.GetAll(), o => o.InterestId, i => i.InterestId, (o, i) => new { o, i })
+                        .Join(persons, o => o.i.PersonId, i => i.PersonId, (link, person) => new { Link = link.o, Person = person }).Where(p => p.Person.PersonId == person.PersonId);
+                        
+                    return Ok(query);
                 }
                 else
                 {
@@ -102,13 +101,13 @@ namespace lab3_asp.NET.API.Controllers
             }
         }
 
-        //endpoint to update link for a specific person and a specific interest
+        //endpoint to create link for a specific person and a specific interest
         [HttpPost("{nameOfPerson}/{nameOfInterest}")]
-        public async Task<ActionResult<Link>> UpdateLinkForSpecifiedPersonAndInterest(string nameOfPerson, string nameOfInterest, Link link)
+        public async Task<ActionResult<Link>> CreateLinkForSpecifiedPersonAndInterest(string nameOfPerson, string nameOfInterest, Link link)
         {
             try
             {
-                if(link == null)
+                if(link == null || string.IsNullOrEmpty(link.Url))
                 {
                     return BadRequest();
                 }
@@ -130,11 +129,11 @@ namespace lab3_asp.NET.API.Controllers
                         link.Interest = interest;
                         var insertedLink = await _linkRepository.Insert(link);
                         await _linkRepository.Save();
-                        return CreatedAtAction(nameof(GetLinkById), new { id=insertedLink.LinkId }, new { LinkId=insertedLink.LinkId, Url=insertedLink.Url });
+                        return CreatedAtAction(nameof(GetLinkById), new { id=insertedLink.LinkId }, insertedLink);
                     }
                     else
                     {
-                        return NotFound($"Could not find any interests where the title contains '{nameOfInterest}' and the persons name contains '{nameOfPerson}'");
+                        return BadRequest();
                     }
                 }
                 else

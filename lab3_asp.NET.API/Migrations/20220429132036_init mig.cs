@@ -12,7 +12,7 @@ namespace lab3_asp.NET.API.Migrations
                 {
                     InterestId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -26,7 +26,7 @@ namespace lab3_asp.NET.API.Migrations
                 {
                     PersonId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                     TelephoneNumber = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -40,7 +40,7 @@ namespace lab3_asp.NET.API.Migrations
                 {
                     LinkId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Url = table.Column<string>(nullable: true),
+                    Url = table.Column<string>(nullable: false),
                     InterestId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

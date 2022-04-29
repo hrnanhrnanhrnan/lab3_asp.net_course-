@@ -53,8 +53,27 @@ namespace lab3_asp.NET.API.Controllers
             }
         }
 
+        //endpoint to fetch interests from interest table by id
+        [HttpGet("interestbyid:{id}")]
+        public async Task<IActionResult> GetInterestById(int id)
+        {
+            try
+            {
+                var result = await _interestRepository.GetById(id);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error to retrieve data from Database");
+            }
+        }
+
         //endpoint to fetch personinterest from personinterest table by id
-        [HttpGet("getbyid:{id}")]
+        [HttpGet("personinterestbyid:{id}")]
         public async Task<IActionResult> GetPersonInterestById(int id)
         {
             try
@@ -72,7 +91,7 @@ namespace lab3_asp.NET.API.Controllers
             }
         }
 
-        //endpoint to fetch all interests filtered on name
+        //endpoint to fetch all interests that is connected to a person filtered on name
         [HttpGet("{name}")]
         public async Task<IActionResult> GetAllInterestFromSpecifiedPerson(string name)
         {
@@ -83,10 +102,10 @@ namespace lab3_asp.NET.API.Controllers
                 if (personFromName != null)
                 {
                     var person = await _personRepository.GetById(personFromName.PersonId);
-                    var personInterests = await _personInterestRepository.GetAll();
                     var interests = await _interestRepository.GetAll();
-                    var query = personInterests.Where(pi => pi.PersonId == person.PersonId)
-                        .Join(interests, o => o.InterestId, i => i.InterestId, (pi, interest) => new { Title = interest.Title, Description = interest.Description });
+                    var query = interests.Join(await _personInterestRepository.GetAll(), o => o.InterestId, i => i.InterestId, (o, i) => new { o, i })
+                        .Join(persons, o => o.i.PersonId, i => i.PersonId, (interest, person) => new { Person = person, Interest = interest.o, Links = interest.o.Links })
+                        .Where(a => a.Person.PersonId == person.PersonId);
                     return Ok(query.Distinct());
                 }
                 else
@@ -102,13 +121,19 @@ namespace lab3_asp.NET.API.Controllers
 
         //endpoint to connect person to interest
         [HttpPost]
-        public async Task<ActionResult<PersonInterest>> UpdatePersonInterest(PersonInterest personInterest)
+        public async Task<ActionResult<PersonInterest>> CreatePersonInterest(PersonInterest personInterest)
         {
             try
             {
+                var pi = await _personInterestRepository.GetAll(); 
+                if(!(pi.Any(pi => pi.PersonId == personInterest.PersonId) && pi.Any(pi => pi.InterestId == personInterest.InterestId)))
+                {
+                    return BadRequest();
+                }
                 var createdPI = await _personInterestRepository.Insert(personInterest);
                 await _personInterestRepository.Save();
                 return CreatedAtAction(nameof(GetPersonInterestById), new { id =createdPI.PersonInterestId}, personInterest);
+
             }
             catch (Exception)
             {

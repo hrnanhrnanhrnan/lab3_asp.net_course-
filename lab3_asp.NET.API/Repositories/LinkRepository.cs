@@ -29,12 +29,23 @@ namespace lab3_asp.NET.API.Repositories
 
         public async Task<IEnumerable<Link>> GetAll()
         {
-            return await _context.Links.ToListAsync();
+            return await _context.Links.Include(l => l.Interest)
+                .ThenInclude(l => l.Links)
+                .Include(l => l.Interest)
+                .ThenInclude(l => l.PersonInterests)
+                .ThenInclude(l => l.Person)
+                .ToListAsync();
         }
 
         public async Task<Link> GetById(int id)
         {
-            return await _context.Links.FirstOrDefaultAsync(link => link.LinkId == id);
+            return await _context.Links.Include(l => l.Interest)
+                .ThenInclude(i => i.PersonInterests)
+                .ThenInclude(pi => pi.Person)
+                .Include(l => l.Interest)
+                .ThenInclude(i => i.PersonInterests)
+                .ThenInclude(pi => pi.Person)
+                .FirstOrDefaultAsync(link => link.LinkId == id);
         }
 
         public async Task<Link> Insert(Link entity)

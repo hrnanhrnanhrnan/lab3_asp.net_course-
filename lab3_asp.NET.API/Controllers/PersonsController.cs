@@ -76,5 +76,27 @@ namespace lab3_asp.NET.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error when trying to retrieve data from the database");
             }
         }
+
+        //endpoint to get person specified by name
+        [HttpGet("byid:{id}")]
+        public async Task<IActionResult> GetPersonById(int id)
+        {
+            try
+            {
+                var person = await _personRepository.GetById(id);
+                if (person != null)
+                {
+                    return Ok(person);
+                }
+                else
+                {
+                    return NotFound($"Could not find any persons with id: {id}...");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error when trying to retrieve data from the database");
+            }
+        }
     }
 }
